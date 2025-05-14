@@ -73,7 +73,7 @@ export default function Home() {
           <h2 className="text-lg font-semibold mb-2">Centroid maxim</h2>
           <div className="mb-4">
             <p><strong>Locație:</strong> {pollutantData.name}</p>
-            <p><strong>Valoare maximă:</strong> {Number(pollutantData.max_value).toFixed(3)}</p>
+            <p><strong>Valoare maximă:</strong> {Number(pollutantData.max_value).toFixed(10)}</p>
           </div>
           <MapView
             centroid={pollutantData.centroid}
