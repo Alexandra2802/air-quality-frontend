@@ -4,17 +4,20 @@ import "leaflet/dist/leaflet.css";
 
 import { fetchCentroidByPollutantId } from "../services/centroid";
 import { fetchHeatmapData } from "../services/heatmap";
+import { fetchAnimatedHeatmap } from "../services/animatedHeatmap"
 
 import PollutantTabs from "../components/PollutantTabs";
 import MapView from "../components/MapView";
 import HeatmapLayer from "../components/HeatMapLayer";
+import AnimatedHeatmap from "../components/Animatedheatmap"
 
 export default function Home() {
   const [activeId, setActiveId] = useState(1);
   const [pollutantData, setPollutantData] = useState(null);
   const [heatmapData, setHeatmapData] = useState(null);
-  const [fromDate, setFromDate] = useState("2025-03-16");
-  const [toDate, setToDate] = useState("2025-03-16");
+  const [fromDate, setFromDate] = useState("2025-05-10");
+  const [toDate, setToDate] = useState("2025-05-15");
+  const [animatedData, setAnimatedData] = useState(null);
 
   useEffect(() => {
     fetchCentroidByPollutantId(activeId, fromDate, toDate)
@@ -39,6 +42,12 @@ export default function Home() {
         setHeatmapData(geojson);
       })
       .catch((err) => console.error("Eroare heatmap:", err));
+  }, [activeId, fromDate, toDate]);
+
+  useEffect(() => {
+    fetchAnimatedHeatmap(activeId, fromDate, toDate)
+      .then(setAnimatedData)
+      .catch(console.error);
   }, [activeId, fromDate, toDate]);
 
   return (
@@ -96,6 +105,16 @@ export default function Home() {
           <HeatmapLayer geojson={heatmapData} />
         </MapContainer>
       )}
+
+      <h2 className="text-lg font-semibold mt-8 mb-2">Animație: evoluția zilnică</h2>
+      {animatedData ? (
+        <AnimatedHeatmap data={animatedData} />
+      ) : (
+        <p>Se încarcă animația...</p>
+      )}
+
     </div>
+
+    
   );
 }
