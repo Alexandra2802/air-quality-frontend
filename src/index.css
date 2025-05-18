@@ -72,3 +72,7 @@ button:focus-visible {
 .card {
   background-color: #ebefec;
 }
+
+.leaflet-marker-icon.visited-marker {
+  filter: grayscale(100%);
+}
