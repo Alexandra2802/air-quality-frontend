@@ -28,7 +28,7 @@ const getColor = (val, min, max) => {
 };
 
 
-export default function HeatmapLayer({ geojson }) {
+export default function Heatmap({ geojson }) {
   const { min, max } = getMinMax(geojson);
   return (
     <GeoJSON

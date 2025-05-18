@@ -47,13 +47,13 @@ export default function AnimatedHeatmap({ data }) {
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-semibold mb-2">
-        {new Date(currentDate).toLocaleDateString("ro-RO", {
+      <p className="text-xl font-semibold mb-2">
+        <strong>Data: </strong>{new Date(currentDate).toLocaleDateString("ro-RO", {
             day: "numeric",
             month: "long",
             year: "numeric"
         })}
-      </h2>
+      </p>
       <MapContainer
         center={[45.9432, 24.9668]}
         zoom={6}
