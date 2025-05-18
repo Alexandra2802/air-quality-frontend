@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { fetchCentroidByPollutantId } from "../services/centroid";
 import { fetchHeatmapData } from "../services/heatmap";
 import { fetchAnimatedHeatmap } from "../services/animatedHeatmap"
+import { fetchCountyByRegionId } from "../services/regions";
 
 import PollutantTabs from "../components/PollutantTabs";
 import CentroidMapView from "../components/CentroidMapView";
@@ -18,10 +19,19 @@ export default function Home() {
   const [fromDate, setFromDate] = useState("2025-05-10");
   const [toDate, setToDate] = useState("2025-05-15");
   const [animatedData, setAnimatedData] = useState(null);
+  const [countyInfo, setCountyInfo] = useState('');
 
   useEffect(() => {
     fetchCentroidByPollutantId(activeId, fromDate, toDate)
-      .then(setPollutantData)
+      .then((data) => {
+        setPollutantData(data);
+
+        if (data?.id) {
+          fetchCountyByRegionId(data.id)
+            .then(setCountyInfo)
+            .catch(console.error);
+        }
+      })
       .catch(console.error);
   }, [activeId, fromDate, toDate]);
 
@@ -86,7 +96,7 @@ export default function Home() {
             poluantului selectat, în intervalul de timp ales. Punctul plasat pe hartă indică centrul 
             geometric (centroidul) regiunii respective.</p>
           <div className="mb-4">
-            <p className="text-xl"><strong>Locație:</strong> {pollutantData.name}</p>
+            <p className="text-xl"><strong>Locație:</strong> {pollutantData.name}, județul {countyInfo.name}</p>
             <p className="text-xl"><strong>Valoare maximă:</strong> {Number(pollutantData.max_value).toFixed(10)}</p>
           </div>
           <CentroidMapView
