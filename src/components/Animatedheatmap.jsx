@@ -46,7 +46,9 @@ export default function AnimatedHeatmap({ data }) {
   }, [dates.length]);
 
   return (
-    <div className="mb-8">
+    <div className="card shadow rounded-xl p-6 mb-10 mt-10">
+      <h2 className="text-3xl font-bold mb-4 mt-4">Evoluția zilnică</h2>
+      <p className="text-lg mb-8 text-gray-600">Această hartă animată ilustrează evoluția în timp a poluării pe întreg teritoriul României. Culorile se schimbă dinamic pentru fiecare zi din intervalul selectat, evidențiind modul în care poluarea se deplasează sau se intensifică în anumite regiuni de la o zi la alta.</p>
       <p className="text-xl font-semibold mb-2">
         <strong>Data: </strong>{new Date(currentDate).toLocaleDateString("ro-RO", {
             day: "numeric",
