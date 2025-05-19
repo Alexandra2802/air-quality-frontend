@@ -3,14 +3,14 @@ import "leaflet/dist/leaflet.css";
 
 import { fetchCentroidByPollutantId } from "../services/centroid";
 import { fetchHeatmapData } from "../services/heatmap";
-import { fetchAnimatedHeatmap } from "../services/animatedHeatmap"
+import { fetchAnimatedHeatmap } from "../services/animatedHeatmap";
 import { fetchCountyByRegionId } from "../services/regions";
 import { fetchAnimatedCentroid } from "../services/animatedCentroid";
 
 import PollutantTabs from "../components/PollutantTabs";
 import CentroidMapView from "../components/CentroidMapView";
 import Heatmap from "../components/Heatmap";
-import AnimatedHeatmap from "../components/AnimatedHeatmap";
+import AnimatedHeatmap from "../components/Animatedheatmap";
 import AnimatedCentroid from "../components/AnimatedCentroid";
 
 export default function Home() {
@@ -54,14 +54,16 @@ export default function Home() {
   }, [activeId, fromDate, toDate]);
 
   useEffect(() => {
-  fetchAnimatedCentroid(activeId, fromDate, toDate)
-    .then(setAnimatedCentroids)
-    .catch(console.error);
-}, [activeId, fromDate, toDate]);
+    fetchAnimatedCentroid(activeId, fromDate, toDate)
+      .then(setAnimatedCentroids)
+      .catch(console.error);
+  }, [activeId, fromDate, toDate]);
 
   return (
-    <div  className="max-w-screen-xl mx-auto px-6">
-      <h1 className="text-2xl font-bold mb-12 mt-15 text-center">Calitatea aerului în România</h1>
+    <div className="max-w-screen-xl mx-auto px-6">
+      <h1 className="text-2xl font-bold mb-12 mt-15 text-center">
+        Calitatea aerului în România
+      </h1>
 
       <PollutantTabs activeId={activeId} setActiveId={setActiveId} />
 
@@ -98,15 +100,11 @@ export default function Home() {
       )}
 
       {/* Animated centroid */}
-      {animatedCentroids && (
-        <AnimatedCentroid data={animatedCentroids} />
-      )}
+      {animatedCentroids && <AnimatedCentroid data={animatedCentroids} />}
 
       {/* Heatmap */}
-      {heatmapData && (
-        <Heatmap geojson={heatmapData} />
-      )}
-    
+      {heatmapData && <Heatmap geojson={heatmapData} />}
+
       {/* Animated Heatmap */}
       {animatedData ? (
         <AnimatedHeatmap data={animatedData} />
