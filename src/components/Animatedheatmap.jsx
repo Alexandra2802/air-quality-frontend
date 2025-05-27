@@ -20,7 +20,7 @@ const getColor = (val, min, max) => {
   return colorScale[index];
 };
 
-export default function AnimatedHeatmap({ data }) {
+export default function AnimatedHeatmap({ data, activeId, fromDate, toDate }) {
   const dates = Object.keys(data);
   const [dayIndex, setDayIndex] = useState(0);
   const currentDate = dates[dayIndex];
@@ -44,12 +44,16 @@ export default function AnimatedHeatmap({ data }) {
   const min = Math.min(...allValues);
   const max = Math.max(...allValues);
 
+   useEffect(() => {
+      setDayIndex(0);
+    }, [activeId, fromDate, toDate]); //reset la schimbare
+
   useEffect(() => {
     const interval = setInterval(() => {
       setDayIndex((prev) => (prev + 1) % dates.length);
     }, 1500);
     return () => clearInterval(interval);
-  }, [dates.length]);
+  }, [data]);
 
   return (
     <Card
