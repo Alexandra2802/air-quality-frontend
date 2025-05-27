@@ -8,7 +8,7 @@ export default function Card({
 }) {
   return (
     <div className="card shadow rounded-xl pt-6 pl-10 pr-10 pb-6 mb-10 mt-10">
-      <h2 className="text-3xl font-bold mb-4 mt-4 color-green-100">{title}</h2>
+      <h2 className="text-3xl font-bold mb-4 mt-4">{title}</h2>
       <p className="text-lg mb-8 text-gray-600">{description}</p>
 
       {(date || location || value) && (
