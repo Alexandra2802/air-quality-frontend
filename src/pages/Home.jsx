@@ -101,12 +101,7 @@ export default function Home() {
       )}
 
       {/* Animated centroid */}
-      {animatedCentroids && <AnimatedCentroid 
-        data={animatedCentroids} 
-        activeId={activeId}
-        fromDate={fromDate}
-        toDate={toDate}  
-      />}
+      {animatedCentroids && <AnimatedCentroid data={animatedCentroids} />}
 
       {/* Heatmap */}
       {heatmapData && <Heatmap geojson={heatmapData} />}
