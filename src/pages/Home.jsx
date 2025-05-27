@@ -12,6 +12,7 @@ import CentroidMapView from "../components/CentroidMapView";
 import Heatmap from "../components/Heatmap";
 import AnimatedHeatmap from "../components/Animatedheatmap";
 import AnimatedCentroid from "../components/AnimatedCentroid";
+import ImpactHeatmap from "../components/ImpactHeatmap";
 
 export default function Home() {
   const [activeId, setActiveId] = useState(1);
@@ -111,6 +112,13 @@ export default function Home() {
       ) : (
         <p>Se încarcă animația...</p>
       )}
+
+      {/*Impact Heatmap*/}
+      <ImpactHeatmap
+        pollutantId={activeId}
+        fromDate={fromDate}
+        toDate={toDate}
+      />
     </div>
   );
 }
