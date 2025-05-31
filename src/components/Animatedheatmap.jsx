@@ -23,6 +23,11 @@ const getColor = (val, min, max) => {
 export default function AnimatedHeatmap({ data }) {
   const dates = Object.keys(data);
   const [dayIndex, setDayIndex] = useState(0);
+
+  useEffect(() => {
+    setDayIndex(0);
+  }, [data]);
+
   const currentDate = dates[dayIndex];
   const rawFeatures = data[currentDate] || [];
 
@@ -45,6 +50,7 @@ export default function AnimatedHeatmap({ data }) {
   const max = Math.max(...allValues);
 
   useEffect(() => {
+    if (dates.length === 0) return;
     const interval = setInterval(() => {
       setDayIndex((prev) => (prev + 1) % dates.length);
     }, 1500);
@@ -67,7 +73,7 @@ export default function AnimatedHeatmap({ data }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <GeoJSON
-          key={currentDate} //forteaza recrearea componentei
+          key={currentDate}
           data={geojson}
           style={(feature) => ({
             fillColor: getColor(feature.properties.value, min, max),
