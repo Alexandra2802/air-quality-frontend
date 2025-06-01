@@ -32,7 +32,7 @@ export default function AnimatedCentroid({ data }) {
 
   const current = data[index];
 
-  const { coordinates } = JSON.parse(current.centroid);
+  const { coordinates } = JSON.parse(current?.centroid);
 
   const [countyInfo, setCountyInfo] = useState(null);
 

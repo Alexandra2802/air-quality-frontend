@@ -16,7 +16,7 @@ export default function PollutantTabs({ activeId, setActiveId }) {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
+    <div className="flex flex-wrap gap-2">
       {pollutants.map((p) => (
         <button
           key={p.id}

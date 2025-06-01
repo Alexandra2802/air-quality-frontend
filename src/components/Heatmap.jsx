@@ -22,9 +22,17 @@ const getMinMax = (geojson) => {
 const getColor = (val, min, max) => {
   if (isNaN(val)) return "#ccc";
 
+  if (min === max) {
+    return colorScale[colorScale.length - 1];
+  }
+
   // normalizare intre 0 si 1
   const ratio = (val - min) / (max - min);
-  const index = Math.floor(ratio * (colorScale.length - 1));
+  let index = Math.floor(ratio * (colorScale.length - 1));
+
+  if (index < 0) index = 0;
+  if (index > colorScale.length - 1) index = colorScale.length - 1;
+
   return colorScale[index];
 };
 
