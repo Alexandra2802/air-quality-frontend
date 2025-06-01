@@ -4,7 +4,6 @@ import "leaflet/dist/leaflet.css";
 import { fetchCentroidByPollutantId } from "../services/centroid";
 import { fetchHeatmapData } from "../services/heatmap";
 import { fetchAnimatedHeatmap } from "../services/animatedHeatmap";
-import { fetchCountyByRegionId } from "../services/regions";
 import { fetchAnimatedCentroid } from "../services/animatedCentroid";
 
 import PollutantTabs from "../components/PollutantTabs";
@@ -62,31 +61,33 @@ export default function Home() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-6">
-      <h1 className="text-2xl font-bold mb-12 mt-15 text-center">
+      <h1 className="text-2xl font-bold mb-8 mt-8 text-center">
         Calitatea aerului în România
       </h1>
 
-      <PollutantTabs activeId={activeId} setActiveId={setActiveId} />
+      <div className="flex items-center justify-between mb-4">
+        <PollutantTabs activeId={activeId} setActiveId={setActiveId} />
 
       {/* Date selectors */}
-      <div className="flex gap-4 my-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">De la:</label>
-          <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className="border px-2 py-1 rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Până la:</label>
-          <input
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className="border px-2 py-1 rounded"
-          />
+      <div className="flex gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">De la:</label>
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="border px-2 py-1 rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Până la:</label>
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="border px-2 py-1 rounded"
+            />
+          </div>
         </div>
       </div>
 
