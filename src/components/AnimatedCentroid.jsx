@@ -21,24 +21,35 @@ L.Icon.Default.mergeOptions({
 
 export default function AnimatedCentroid({ data }) {
   const [index, setIndex] = useState(0);
+  const [playing, setPlaying] = useState(true);
+  const intervalRef = useRef(null);
   const days = data.map((d) => d.day);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % data.length);
-    }, 4000);
-    return () => clearInterval(interval);
+    setIndex(0);
   }, [data]);
 
+  useEffect(() => {
+    if (!data.length) return;
+
+    if (playing) {
+      intervalRef.current = setInterval(() => {
+        setIndex((prev) => (prev + 1) % data.length);
+      }, 4000);
+    } else {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, [playing, data]);
+
   const current = data[index];
-
-  const { coordinates } = JSON.parse(current?.centroid);
-
+  const { coordinates } = JSON?.parse(current?.centroid);
   const [countyInfo, setCountyInfo] = useState(null);
 
   const trajectory = data.slice(0, index + 1).map((d) => {
     const coord = JSON.parse(d.centroid).coordinates;
-    return [coord[1], coord[0]]; // [lat, lon]
+    return [coord[1], coord[0]];
   });
 
   const visitedPoints = data.slice(0, index).map((d) => {
@@ -60,6 +71,37 @@ export default function AnimatedCentroid({ data }) {
     }
   }, [current]);
 
+  const actionButton = (
+    <button
+      onClick={() => setPlaying((prev) => !prev)}
+      className="btn-interactive"
+      aria-label={playing ? "Pauză animație" : "Pornește animație"}
+    >
+      {playing ? (
+        /* Pause icon */
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <rect x="4" y="4" width="4" height="12" rx="1" />
+          <rect x="12" y="4" width="4" height="12" rx="1" />
+        </svg>
+      ) : (
+        /* Play icon */
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M6 4l10 6-10 6V4z" />
+        </svg>
+      )}
+    </button>
+  );
+
   return (
     <Card
       title="Traiectoria centrului de poluare"
@@ -70,6 +112,7 @@ export default function AnimatedCentroid({ data }) {
       location={`${current.name}${
         countyInfo ? `, județul ${countyInfo.name}` : ""
       }`}
+      action={actionButton}
     >
       <MapContainer
         center={[coordinates[1], coordinates[0]]}
