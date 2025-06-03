@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+// components/AnimatedHeatmap.jsx
+import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Card from "./Card";
@@ -23,10 +24,26 @@ const getColor = (val, min, max) => {
 export default function AnimatedHeatmap({ data }) {
   const dates = Object.keys(data);
   const [dayIndex, setDayIndex] = useState(0);
+  const [playing, setPlaying] = useState(true);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     setDayIndex(0);
   }, [data]);
+
+  useEffect(() => {
+    if (!dates.length) return;
+
+    if (playing) {
+      intervalRef.current = setInterval(() => {
+        setDayIndex((prev) => (prev + 1) % dates.length);
+      }, 1500);
+    } else {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, [playing, dates]);
 
   const currentDate = dates[dayIndex];
   const rawFeatures = data[currentDate] || [];
@@ -49,19 +66,43 @@ export default function AnimatedHeatmap({ data }) {
   const min = Math.min(...allValues);
   const max = Math.max(...allValues);
 
-  useEffect(() => {
-    if (dates.length === 0) return;
-    const interval = setInterval(() => {
-      setDayIndex((prev) => (prev + 1) % dates.length);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, [dates]);
+  const actionButton = (
+    <button
+      onClick={() => setPlaying((prev) => !prev)}
+      className="btn-interactive"
+      aria-label={playing ? "Pauză animație" : "Pornește animație"}
+    >
+      {playing ? (
+        /* Pause icon */
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <rect x="4" y="4" width="4" height="12" rx="1" />
+          <rect x="12" y="4" width="4" height="12" rx="1" />
+        </svg>
+      ) : (
+        /* Play icon */
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M6 4l10 6-10 6V4z" />
+        </svg>
+      )}
+    </button>
+  );
 
   return (
     <Card
       title="Evoluția heatmap-ului"
       description="Această hartă animată ilustrează evoluția în timp a poluării pe întreg teritoriul României. Culorile se schimbă dinamic pentru fiecare zi din intervalul selectat, evidențiind modul în care poluarea se deplasează sau se intensifică în anumite regiuni de la o zi la alta."
       date={currentDate}
+      action={actionButton}
     >
       <MapContainer
         center={[45.9432, 24.9668]}

@@ -4,6 +4,7 @@ export default function Card({
   date,
   location,
   value,
+  action,
   children,
 }) {
   return (
@@ -14,14 +15,17 @@ export default function Card({
       {(date || location || value) && (
         <>
           {date && (
-            <p className="text-xl mb-2">
-              <strong>Data:</strong>
-              {new Date(date).toLocaleDateString("ro-RO", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xl">
+                <strong>Data:</strong>{" "}
+                {new Date(date).toLocaleDateString("ro-RO", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+              {action && <div>{action}</div>}
+            </div>
           )}
           {location && (
             <p className="text-xl mb-2">
