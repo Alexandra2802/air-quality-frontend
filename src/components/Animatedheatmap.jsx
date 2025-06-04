@@ -1,18 +1,13 @@
-// components/AnimatedHeatmap.jsx
 import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Card from "./Card";
-
-const colorScale = [
-  "#FFEDA0",
-  "#FEB24C",
-  "#FD8D3C",
-  "#FC4E2A",
-  "#E31A1C",
-  "#BD0026",
-  "#800026",
-];
+import HeatmapLegend from "./MapLegend";
+import {
+  getCommonExponent,
+  formatScientific,
+} from "../utils/formatting";
+import { colorScale } from "../utils/colorScale";
 
 const getColor = (val, min, max) => {
   if (isNaN(val)) return "#ccc";
@@ -63,8 +58,9 @@ export default function AnimatedHeatmap({ data }) {
   const allValues = Object.values(data).flatMap((day) =>
     day.map((f) => Number(f.value))
   );
-  const min = Math.min(...allValues);
-  const max = Math.max(...allValues);
+  const numericAll = allValues.filter((v) => !isNaN(v) && v > 0);
+  const min = Math.min(...numericAll);
+  const max = Math.max(...numericAll);
 
   const actionButton = (
     <button
@@ -73,7 +69,7 @@ export default function AnimatedHeatmap({ data }) {
       aria-label={playing ? "Pauză animație" : "Pornește animație"}
     >
       {playing ? (
-        /* Pause icon */
+        /* Pauză icon */
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5"
@@ -124,10 +120,19 @@ export default function AnimatedHeatmap({ data }) {
           })}
           onEachFeature={(feature, layer) => {
             const { name, value } = feature.properties;
-            layer.bindPopup(`${name}: ${Number(value).toExponential(2)}`);
+            const numericValue = Number(value);
+            const display = isNaN(numericValue)
+              ? "–"
+              : formatScientific(
+                  numericValue,
+                  getCommonExponent(numericAll)
+                );
+            layer.bindPopup(`${name}: ${display}`);
           }}
         />
       </MapContainer>
+
+      <HeatmapLegend values={numericAll} />
     </Card>
   );
 }
