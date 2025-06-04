@@ -30,6 +30,7 @@ export default function ImpactHeatmap({ pollutantId, fromDate, toDate }) {
     const props = feature.properties;
     const name = props.name;
     const index = props.impact_index;
+    const normalized_index = props.normalized_index;
     const pollution = props.avg_pollution;
     const pop = props.population;
     const dens = props.density;
@@ -43,7 +44,8 @@ export default function ImpactHeatmap({ pollutantId, fromDate, toDate }) {
 
     layer.bindPopup(`
       <strong>${name}</strong><br/>
-      Index normalizat: ${index}<br/>
+      Index normalizat: ${normalized_index}<br/>
+      Valoarea bruta a indicelui: ${index.toFixed(2)} <br/>
       Populație: ${pop.toLocaleString()}<br/>
       Densitate: ${dens.toFixed(2)} loc/km²<br/>
       Poluare medie: ${pollution.toExponential(3)}
