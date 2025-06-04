@@ -56,23 +56,21 @@ button:focus-visible {
   outline: none;
 }
 
-/* styles.css */
-
 .btn-interactive {
-  background-color: #ebefec;          /* alb */
-  color: #047857;                     /* verde închis (emerald-700) */
-  border: 2px solid #047857;          /* aceeași nuanță de verde pentru bordură */
-  padding: 0.5rem 1rem;               /* 8px înălțime × 16px lățime */
-  border-radius: 0.375rem;            /* 6px (rounded-md) */
-  font-weight: 500;                   /* semibold */
-  font-size: 1rem;                    /* 16px */
+  background-color: #ebefec;          
+  color: #047857;                     
+  border: 2px solid #047857;         
+  padding: 0.5rem 1rem;              
+  border-radius: 0.375rem;            
+  font-weight: 500;                   
+  font-size: 1rem;                    
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 .btn-interactive:hover {
-  background-color: #ecfdf5;          /* verde deschis (emerald-50) la hover */
-  color: #065f46;                     /* verde mai închis (emerald-900) pentru contrast */
+  background-color: #ecfdf5;          
+  color: #065f46;                     
   border-color: #065f46;
 }
 
@@ -100,4 +98,13 @@ button:focus-visible {
 
 .leaflet-marker-icon.visited-marker {
   filter: grayscale(100%);
+}
+
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.w-1\/7 {
+  width: 14.285714%; /* 1/7 of width */
 }

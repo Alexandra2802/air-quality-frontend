@@ -1,43 +1,37 @@
 import { GeoJSON, MapContainer, TileLayer } from "react-leaflet";
 import Card from "./Card";
+import HeatmapLegend from "./MapLegend";
+import {
+  toSup,
+  getCommonExponent,
+  formatMantissa,
+  formatScientific,
+} from "../utils/formatting";
+import { colorScale } from "../utils/colorScale";
 
-const colorScale = [
-  "#FFEDA0",
-  "#FEB24C",
-  "#FD8D3C",
-  "#FC4E2A",
-  "#E31A1C",
-  "#BD0026",
-  "#800026",
-];
-
-const getMinMax = (geojson) => {
+const getMinMaxAll = (geojson) => {
   const values = geojson.features.map((f) => Number(f.properties.value));
+  const numeric = values.filter((v) => !isNaN(v) && v > 0);
   return {
-    min: Math.min(...values),
-    max: Math.max(...values),
+    min: Math.min(...numeric),
+    max: Math.max(...numeric),
+    all: numeric,
   };
 };
 
 const getColor = (val, min, max) => {
   if (isNaN(val)) return "#ccc";
-
-  if (min === max) {
-    return colorScale[colorScale.length - 1];
-  }
-
-  // normalizare intre 0 si 1
+  if (min === max) return colorScale[colorScale.length - 1];
   const ratio = (val - min) / (max - min);
   let index = Math.floor(ratio * (colorScale.length - 1));
-
   if (index < 0) index = 0;
   if (index > colorScale.length - 1) index = colorScale.length - 1;
-
   return colorScale[index];
 };
 
 export default function Heatmap({ geojson }) {
-  const { min, max } = getMinMax(geojson);
+  const { min, max, all } = getMinMaxAll(geojson);
+
   return (
     <Card
       title="Heatmap"
@@ -65,11 +59,13 @@ export default function Heatmap({ geojson }) {
             const numericValue = Number(value);
             const display = isNaN(numericValue)
               ? "–"
-              : numericValue.toFixed(10);
+              : formatScientific(numericValue, getCommonExponent(all));
             layer.bindPopup(`${name}: ${display}`);
           }}
         />
       </MapContainer>
+
+      <HeatmapLegend values={all} />
     </Card>
   );
 }

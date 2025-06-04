@@ -1,3 +1,4 @@
+// components/CentroidMapView.jsx
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapCenterUpdater from "./MapCenterUpdater";
 import "leaflet/dist/leaflet.css";
@@ -5,8 +6,14 @@ import L from "leaflet";
 import { fetchCountyByRegionId } from "../services/regions";
 import { useState, useEffect } from "react";
 import Card from "./Card";
+import { supMap } from "../utils/formatting";
 
-// Iconite Leaflet
+const toSup = (exp) =>
+  String(exp)
+    .split("")
+    .map((c) => supMap[c] || c)
+    .join("");
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -29,12 +36,22 @@ export default function CentroidMapView({ centroid, name, value, regionId }) {
     }
   }, [regionId]);
 
+  // Format to ×10⁻⁴ mol/m²
+  const numericValue = Number(value);
+  let displayValue = "–";
+  if (!isNaN(numericValue)) {
+    const commonExp = -4;
+    const scaleFactor = 10 ** commonExp; 
+    const mantissa = (numericValue / scaleFactor).toFixed(2);
+    displayValue = `${mantissa}×10${toSup(commonExp)} mol/m²`;
+  }
+
   return (
     <Card
       title="Centrul poluării"
       description="Această hartă evidențiază locația geografică în care s-a înregistrat cea mai mare valoare a poluantului selectat, în intervalul de timp ales. Punctul indică centrul geometric (centroidul) al regiunii respective."
       location={`${name}, județul ${county.name}`}
-      value={value}
+      value={displayValue}
     >
       <MapContainer
         center={center}
