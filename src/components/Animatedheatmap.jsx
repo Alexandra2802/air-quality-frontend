@@ -3,10 +3,7 @@ import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Card from "./Card";
 import HeatmapLegend from "./MapLegend";
-import {
-  getCommonExponent,
-  formatScientific,
-} from "../utils/formatting";
+import { getCommonExponent, formatScientific } from "../utils/formatting";
 import { colorScale } from "../utils/colorScale";
 
 const getColor = (val, min, max) => {
@@ -17,10 +14,12 @@ const getColor = (val, min, max) => {
 };
 
 export default function AnimatedHeatmap({ data }) {
+  if (!data || typeof data !== "object") return null;
+
   const dates = Object.keys(data);
   const [dayIndex, setDayIndex] = useState(0);
-  const [playing, setPlaying] = useState(true);
-  const intervalRef = useRef(null);
+  const [playing, setPlaying]   = useState(true);
+  const intervalRef             = useRef(null);
 
   useEffect(() => {
     setDayIndex(0);
@@ -28,65 +27,47 @@ export default function AnimatedHeatmap({ data }) {
 
   useEffect(() => {
     if (!dates.length) return;
-
     if (playing) {
       intervalRef.current = setInterval(() => {
-        setDayIndex((prev) => (prev + 1) % dates.length);
+        setDayIndex(prev => (prev + 1) % dates.length);
       }, 1500);
     } else {
       clearInterval(intervalRef.current);
     }
-
     return () => clearInterval(intervalRef.current);
   }, [playing, dates]);
 
-  const currentDate = dates[dayIndex];
-  const rawFeatures = data[currentDate] || [];
-
-  const geojson = {
+  const currentDate  = dates[dayIndex];
+  const rawFeatures  = data[currentDate] || [];
+  const geojson      = {
     type: "FeatureCollection",
-    features: rawFeatures.map((f) => ({
+    features: rawFeatures.map(f => ({
       type: "Feature",
       geometry: JSON.parse(f.geometry),
-      properties: {
-        name: f.name,
-        value: f.value,
-      },
-    })),
+      properties: { name: f.name, value: f.value }
+    }))
   };
 
-  const allValues = Object.values(data).flatMap((day) =>
-    day.map((f) => Number(f.value))
+  const allValues = Object.values(data).flatMap(day =>
+    day.map(f => Number(f.value))
   );
-  const numericAll = allValues.filter((v) => !isNaN(v) && v > 0);
+  const numericAll = allValues.filter(v => !isNaN(v) && v > 0);
   const min = Math.min(...numericAll);
   const max = Math.max(...numericAll);
 
   const actionButton = (
     <button
-      onClick={() => setPlaying((prev) => !prev)}
+      onClick={() => setPlaying(prev => !prev)}
       className="btn-interactive"
       aria-label={playing ? "Pauză animație" : "Pornește animație"}
     >
       {playing ? (
-        /* Pauză icon */
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <rect x="4" y="4" width="4" height="12" rx="1" />
           <rect x="12" y="4" width="4" height="12" rx="1" />
         </svg>
       ) : (
-        /* Play icon */
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path d="M6 4l10 6-10 6V4z" />
         </svg>
       )}
@@ -96,7 +77,7 @@ export default function AnimatedHeatmap({ data }) {
   return (
     <Card
       title="Evoluția heatmap-ului"
-      description="Această hartă animată ilustrează evoluția în timp a poluării pe întreg teritoriul României. Culorile se schimbă dinamic pentru fiecare zi din intervalul selectat, evidențiind modul în care poluarea se deplasează sau se intensifică în anumite regiuni de la o zi la alta."
+      description="Această hartă animată ilustrează evoluția în timp a poluării pe întreg teritoriul României."
       date={currentDate}
       action={actionButton}
     >
@@ -112,7 +93,7 @@ export default function AnimatedHeatmap({ data }) {
         <GeoJSON
           key={currentDate}
           data={geojson}
-          style={(feature) => ({
+          style={feature => ({
             fillColor: getColor(feature.properties.value, min, max),
             fillOpacity: 0.6,
             color: "#999",
@@ -120,13 +101,10 @@ export default function AnimatedHeatmap({ data }) {
           })}
           onEachFeature={(feature, layer) => {
             const { name, value } = feature.properties;
-            const numericValue = Number(value);
-            const display = isNaN(numericValue)
+            const num = Number(value);
+            const display = isNaN(num)
               ? "–"
-              : formatScientific(
-                  numericValue,
-                  getCommonExponent(numericAll)
-                );
+              : formatScientific(num, getCommonExponent(numericAll));
             layer.bindPopup(`${name}: ${display}`);
           }}
         />
