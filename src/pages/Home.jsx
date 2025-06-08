@@ -91,7 +91,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Centroid */}
       {centroidData && (
         <CentroidMapView
           centroid={centroidData.centroid}
