@@ -8,7 +8,8 @@
   /* color: rgba(255, 255, 255, 0.87); */
   /* background-color: #242424; */
   color: #213547;
-  background-color:#d8d8d8;
+  /* background-color:#d8d8d8; */
+  background-color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,7 +30,8 @@ body {
   margin: 0;
   min-width: 450px;
   min-height: 100vh;
-  background-color: #d8d8d8;
+  /* background-color: #d8d8d8; */
+  background-color: white;
 }
 
 h1 {
@@ -93,7 +95,7 @@ button:focus-visible {
 }
 
 .card {
-  background-color: #ebefec;
+  background-color: #f5f7f3fc;
 }
 
 .leaflet-marker-icon.visited-marker {

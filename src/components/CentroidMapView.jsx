@@ -1,4 +1,3 @@
-// components/CentroidMapView.jsx
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapCenterUpdater from "./MapCenterUpdater";
 import "leaflet/dist/leaflet.css";

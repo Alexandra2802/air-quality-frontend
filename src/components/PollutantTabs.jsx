@@ -9,7 +9,7 @@ export default function PollutantTabs({ activeId, setActiveId }) {
       .then((data) => {
         setPollutants(data);
         if (data.length > 0) {
-          setActiveId((prev) => prev || data[0].id); // selecteaza primul daca nu e deja selectat
+          setActiveId((prev) => prev || data[0].id);
         }
       })
       .catch(console.error);

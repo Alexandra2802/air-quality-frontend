@@ -2,48 +2,54 @@ import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 
 import { fetchCentroidByPollutantId } from "../services/centroid";
-import { fetchHeatmapData }      from "../services/heatmap";
-import { fetchAnimatedHeatmap }  from "../services/animatedHeatmap";
+import { fetchHeatmapData } from "../services/heatmap";
+import { fetchAnimatedHeatmap } from "../services/animatedHeatmap";
 import { fetchAnimatedCentroid } from "../services/animatedCentroid";
 
-import PollutantTabs    from "../components/PollutantTabs";
-import CentroidMapView  from "../components/CentroidMapView";
-import Heatmap          from "../components/Heatmap";
-import AnimatedHeatmap  from "../components/Animatedheatmap";
+import PollutantTabs from "../components/PollutantTabs";
+import CentroidMapView from "../components/CentroidMapView";
+import Heatmap from "../components/Heatmap";
+import AnimatedHeatmap from "../components/AnimatedHeatmap";
 import AnimatedCentroid from "../components/AnimatedCentroid";
-import ImpactHeatmap    from "../components/ImpactHeatmap";
+import ImpactHeatmap from "../components/ImpactHeatmap";
 
-import { Box, TextField }       from "@mui/material";
-import { LocalizationProvider }  from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns }        from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker }            from "@mui/x-date-pickers/DatePicker";
-import { format }                from "date-fns";
-import { ro }                    from "date-fns/locale";
+import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
+import { Box, TextField, Typography } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { format } from "date-fns";
+import { ro } from "date-fns/locale";
+
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 export default function Home() {
   const [activeId, setActiveId] = useState(1);
 
+  const descriptions = {
+    1: "Dioxidul de azot (NO₂) este un gaz iritant, produs mai ales prin arderea combustibililor în motoare și centrale termice. Expunerea prelungită la concentrații ridicate poate duce la inflamarea căilor respiratorii și poate agrava afecțiunile pulmonare preexistente.",
+    2: "Monoxidul de carbon (CO) este produs prin arderea incompletă a materialelor pe bază de carbon, mai ales în trafic sau în încăperi ventilate necorespunzător. Este un gaz incolor, inodor și extrem de periculos deoarece reduce capacitatea sângelui de a transporta oxigen.",
+    3: "Ozonul troposferic (O₃) nu este emis direct, ci este un poluant secundar, format prin reacții fotochimice între oxizi de azot și compuși organici volatili, sub acțiunea radiației solare. Are efecte negative asupra sănătății respiratorii și a vegetației.",
+    4: "Dioxidul de sulf (SO₂) provine din arderea cărbunelui sau a petrolului cu conținut ridicat de sulf. Acest gaz poate cauza iritații respiratorii și contribuie la formarea ploilor acide.",
+  };
+
   const [fromDate, setFromDate] = useState(new Date("2025-05-10"));
-  const [toDate,   setToDate]   = useState(new Date("2025-05-15"));
-
-  // for  API calls
+  const [toDate, setToDate] = useState(new Date("2025-05-15"));
   const [fdString, setFdString] = useState(format(fromDate, "yyyy-MM-dd"));
-  const [tdString, setTdString] = useState(format(toDate,   "yyyy-MM-dd"));
+  const [tdString, setTdString] = useState(format(toDate, "yyyy-MM-dd"));
 
-  const [centroidData, setCentroidData]       = useState(null);
-  const [heatmapData,   setHeatmapData]       = useState(null);
-  const [animatedData,  setAnimatedData]      = useState(null);
-  const [animatedCen,   setAnimatedCentroids] = useState(null);
-
+  const [centroidData, setCentroidData] = useState(null);
+  const [heatmapData, setHeatmapData] = useState(null);
+  const [animatedData, setAnimatedData] = useState(null);
+  const [animatedCen, setAnimatedCentroids] = useState(null);
   const [loadingAnim, setLoadingAnim] = useState(false);
 
   useEffect(() => {
     setFdString(format(fromDate, "yyyy-MM-dd"));
-    setTdString(format(toDate,   "yyyy-MM-dd"));
+    setTdString(format(toDate, "yyyy-MM-dd"));
   }, [fromDate, toDate]);
 
-  const isIntervalValid = () =>
-    fromDate.getTime() <= toDate.getTime();
+  const isIntervalValid = () => fromDate.getTime() <= toDate.getTime();
 
   useEffect(() => {
     if (!isIntervalValid()) return;
@@ -55,14 +61,14 @@ export default function Home() {
   useEffect(() => {
     if (!isIntervalValid()) return;
     fetchHeatmapData(activeId, fdString, tdString)
-      .then(data => {
+      .then((data) => {
         const geojson = {
           type: "FeatureCollection",
-          features: data.map(item => ({
+          features: data.map((item) => ({
             type: "Feature",
             geometry: JSON.parse(item.geometry),
-            properties: { name: item.name, value: item.value }
-          }))
+            properties: { name: item.name, value: item.value },
+          })),
         };
         setHeatmapData(geojson);
       })
@@ -74,11 +80,11 @@ export default function Home() {
     setLoadingAnim(true);
     setAnimatedData(null);
     fetchAnimatedHeatmap(activeId, fdString, tdString)
-      .then(data => {
+      .then((data) => {
         setAnimatedData(data);
         setLoadingAnim(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setLoadingAnim(false);
       });
@@ -93,7 +99,7 @@ export default function Home() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-6">
-      <h1 className="text-2xl font-bold mb-8 mt-8 text-center">
+      <h1 className="text-2xl font-bold mb-16 mt-12 text-center">
         Calitatea aerului în România
       </h1>
 
@@ -105,7 +111,7 @@ export default function Home() {
             <DatePicker
               label="De la"
               value={fromDate}
-              onChange={d => d && setFromDate(d)}
+              onChange={(d) => d && setFromDate(d)}
               inputFormat="dd/MM/yyyy"
               mask="__/__/____"
               renderInput={params => <TextField {...params} size="small" />}
@@ -113,7 +119,7 @@ export default function Home() {
             <DatePicker
               label="Până la"
               value={toDate}
-              onChange={d => d && setToDate(d)}
+              onChange={(d) => d && setToDate(d)}
               inputFormat="dd/MM/yyyy"
               mask="__/__/____"
               renderInput={params => <TextField {...params} size="small" />}
@@ -121,6 +127,15 @@ export default function Home() {
           </Box>
         </LocalizationProvider>
       </div>
+
+      <Box className="flex items-start gap-4 mb-12 mt-6">
+        <TipsAndUpdatesOutlinedIcon
+          sx={{ color: "#25723e", fontSize: 40, mt: "4px" }}
+        />
+        <p className="text-xl">
+          {descriptions[activeId] || "Alege un poluant pentru detalii."}
+        </p>
+      </Box>
 
       {!isIntervalValid() && (
         <p className="text-red-600 text-center mb-4">
@@ -139,20 +154,17 @@ export default function Home() {
       {isIntervalValid() && animatedCen && (
         <AnimatedCentroid data={animatedCen} />
       )}
-      {isIntervalValid() && heatmapData && (
-        <Heatmap geojson={heatmapData} />
-      )}
+      {isIntervalValid() && heatmapData && <Heatmap geojson={heatmapData} />}
 
-      {isIntervalValid() && (
-        !animatedData || loadingAnim ? (
+      {isIntervalValid() &&
+        (!animatedData || loadingAnim ? (
           <p>Se încarcă animația…</p>
         ) : (
           <AnimatedHeatmap
             key={`${fdString}-${tdString}-${activeId}`}
             data={animatedData}
           />
-        )
-      )}
+        ))}
 
       {isIntervalValid() && (
         <ImpactHeatmap

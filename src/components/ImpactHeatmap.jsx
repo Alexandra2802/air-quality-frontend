@@ -6,13 +6,13 @@ import Card from "./Card";
 import ImpactLegend from "./ImpactLegend";
 
 const getColor = (v) => {
-  if (v > 10000) return "#08306b"; // >10000
-  if (v > 8000)  return "#2171b5"; // 8000–10000
-  if (v > 4000)  return "#4292c6"; // 4000–8000
-  if (v > 2000)  return "#6baed6"; // 2000–4000
-  if (v > 1000)  return "#9ecae1"; // 1000–2000
-  if (v > 500)   return "#c6dbef"; // 500–1000
-                  return "#deebf7"; // 0–500
+  if (v > 10000) return "#08306b"; 
+  if (v > 8000)  return "#2171b5"; 
+  if (v > 4000)  return "#4292c6"; 
+  if (v > 2000)  return "#6baed6"; 
+  if (v > 1000)  return "#9ecae1"; 
+  if (v > 500)   return "#c6dbef"; 
+                  return "#deebf7"; 
 };
 
 export default function ImpactHeatmap({ pollutantId, fromDate, toDate }) {
